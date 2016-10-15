@@ -26,7 +26,9 @@ $dispatcher = patterns('',
         url_post("^/tickets\.(?P<format>xml|json|email)$", array('api.tickets.php:TicketApiController','create')),
         url('^/tasks/', patterns('',
                 url_post("^cron$", array('api.cron.php:CronApiController', 'execute'))
-         ))
+         )),
+        //aggiunto GET /tickets
+        url_get("^/tickets$", array('api.tickets.php:TicketApiController','retrieve'))
         );
 
 Signal::send('api', $dispatcher);

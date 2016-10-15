@@ -94,8 +94,54 @@ class TicketApiController extends ApiController {
         return true;
     }
 
+	/*
+	* Valida la richiesta GET /tickets e ritorna un json con i ticket 
+	*/
+	function retrieve() {
 
-    function create($format) {
+        if(!($key=$this->requireApiKey()) || !$key->canCreateTickets())
+            return $this->exerr(401, __('API key not authorized'));
+		
+		$tickets = null;
+		$data = $_GET;
+		
+		//TODO valido i parametri della GET
+		//if(!$data['id_crm']) {
+		//return $this->exerr(400, __("Bad request"));
+		//} else {
+		$tickets = $this->retrieveTickets($data);
+        //}
+        
+        if(!$tickets) {
+            return $this->exerr(500, __("Unable to retrieve tickets: unknown error"));
+		}
+        $this->response(200, json_encode($tickets));
+    }
+    
+	/* 
+	* Seleziona i ticket secondo i parametri passati nella richiesta 
+	*/
+	function retrieveTickets($data) {
+	
+        $tickets = Ticket::objects();
+        	
+		if($data['debug']) {
+			//stampo tutto l'array
+			print_r($tickets->all());
+			die();
+		} else {
+			//seleziono i tickets
+			$tickets
+				//filtro per: status, email, custom fields??
+				->filter(array('status__state' => 'open'))//, 'user__emails__address' => 'andrea.taffi@gmail.com'))
+				//TODO decidere che parametri ritornare
+				->values('status__state', 'isanswered', 'isoverdue','topic', 'staff_id', 'team_id', 'user__emails__address');
+        	
+        	return $tickets->all();
+        }
+    }
+	    
+	function create($format) {
 
         if(!($key=$this->requireApiKey()) || !$key->canCreateTickets())
             return $this->exerr(401, __('API key not authorized'));
@@ -109,14 +155,14 @@ class TicketApiController extends ApiController {
             $ticket = $this->createTicket($this->getRequest($format));
         }
 
-        if(!$ticket)
+        if(!$ticket) {
             return $this->exerr(500, __("Unable to create new ticket: unknown error"));
-
+		}
         $this->response(201, $ticket->getNumber());
     }
-
-    /* private helper functions */
-
+	    
+	/* private helper functions */
+	
     function createTicket($data) {
 
         # Pull off some meta-data
