@@ -28,7 +28,8 @@ $dispatcher = patterns('',
                 url_post("^cron$", array('api.cron.php:CronApiController', 'execute'))
          )),
         //aggiunto GET /tickets
-        url_get("^/tickets$", array('api.tickets.php:TicketApiController','retrieve'))
+        url_get("^/tickets$", array('api.tickets.php:TicketApiController','retrieve')),
+        url_get("^/ticket$", array('api.tickets.php:TicketApiController','find'))
         );
 
 Signal::send('api', $dispatcher);

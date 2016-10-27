@@ -145,6 +145,47 @@ class TicketApiController extends ApiController {
 	    }
 	}
 	
+    /*
+	* Valida la richiesta GET /ticket e ritorna un json con il dettaglio del ticket 
+	*/
+	function find() {
+
+        if(!($key=$this->requireApiKey()) || !$key->canCreateTickets())
+            return $this->exerr(401, __('API key not authorized'));
+		
+		$ticket = null;
+		$data = $_GET;
+		
+		//valido i parametri della GET
+		if($data['id'] == "") {
+			return $this->exerr(400, __("Bad request"));
+		} else {
+			$ticket = $this->retrieveTicket($data);
+        }
+        
+        $this->response(200, json_encode($ticket));
+    }
+	    
+	/* 
+	* Seleziona i ticket secondo i parametri passati nella richiesta 
+	*/
+	function retrieveTicket($data) {
+	
+	    $tickets = Ticket::objects();
+	    //$ticket = Ticket::lookup($data['id']);
+	    
+	    $filters = array();
+	    if($data['id'] != '') {
+	    	$filters['ticket_id'] = $data['id'];
+	    }
+	    $tickets->filter($filters);
+	    
+	    //seleziono i tickets
+	    $tickets->values('status__state', 'number','topic', 'staff__firstname', 'staff__lastname', 'team_id', 'user__emails__address', 'user__cdata__id_crm', 'cdata__subject', 'thread__entries__title', 'thread__entries__body', 'thread__entries__created');
+	    
+	    return $tickets->all();
+	}
+	
 	function create($format) {
 
         if(!($key=$this->requireApiKey()) || !$key->canCreateTickets())
