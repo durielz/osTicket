@@ -105,16 +105,13 @@ class TicketApiController extends ApiController {
 		$tickets = null;
 		$data = $_GET;
 		
-		//TODO valido i parametri della GET
-		//if(!$data['id_crm']) {
-		//return $this->exerr(400, __("Bad request"));
-		//} else {
-		$tickets = $this->retrieveTickets($data);
-        //}
+		//valido i parametri della GET
+		if($data['id_crm'] == "") {
+			return $this->exerr(400, __("Bad request"));
+		} else {
+			$tickets = $this->retrieveTickets($data);
+        }
         
-        if(!$tickets) {
-            return $this->exerr(500, __("Unable to retrieve tickets: unknown error"));
-		}
         $this->response(200, json_encode($tickets));
     }
     
@@ -123,24 +120,31 @@ class TicketApiController extends ApiController {
 	*/
 	function retrieveTickets($data) {
 	
-        $tickets = Ticket::objects();
-        	
+	    $tickets = Ticket::objects();
+	    	
+	    $filters = array();
+	    if($data['id_crm'] != '') {
+	    	$filters['user__cdata__id_crm'] = $data['id_crm'];
+	    }
+	    if($data['state'] != '') {
+	    	$filters['status__state'] = $data['state'];
+	    }
+	    
+	    //filtro per: status, email, custom fields??
+	    $tickets->filter($filters);
+	    
 		if($data['debug']) {
 			//stampo tutto l'array
 			print_r($tickets->all());
 			die();
 		} else {
 			//seleziono i tickets
-			$tickets
-				//filtro per: status, email, custom fields??
-				->filter(array('status__state' => 'open'))//, 'user__emails__address' => 'andrea.taffi@gmail.com'))
-				//TODO decidere che parametri ritornare
-				->values('status__state', 'isanswered', 'isoverdue','topic', 'staff_id', 'team_id', 'user__emails__address');
-        	
-        	return $tickets->all();
-        }
-    }
-	    
+			$tickets->values('status__state', 'lastupdate', 'number', 'isanswered', 'isoverdue','topic', 'staff__firstname', 'staff__lastname', 'team_id', 'user__emails__address', 'user__cdata__id_crm', 'cdata__subject');
+			
+	    	return $tickets->all();
+	    }
+	}
+	
 	function create($format) {
 
         if(!($key=$this->requireApiKey()) || !$key->canCreateTickets())
