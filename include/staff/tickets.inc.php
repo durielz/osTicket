@@ -40,38 +40,38 @@ $queue_columns = array(
             'heading' => __('Number'),
             ),
         'date' => array(
-            'width' => '14.6%',
+            'width' => '10%',
             'heading' => __('Date Created'),
             'sort_col' => 'created',
+            ),
+        'assignee' => array(
+            'width' => '8%',
+            'heading' => __('Agent'),
             ),
         'subject' => array(
             'width' => '29.8%',
             'heading' => __('Subject'),
             'sort_col' => 'cdata__subject',
             ),
-        'name' => array(
-            'width' => '18.1%',
-            'heading' => __('From'),
-            'sort_col' =>  'user__name',
+        'dept' => array(
+            'width' => '10%',
+            'heading' => __('Department'),
+            'sort_col'  => 'dept__name',
             ),
         'status' => array(
-            'width' => '8.4%',
+            'width' => '6%',
             'heading' => __('Status'),
             'sort_col' => 'status_id',
             ),
         'priority' => array(
-            'width' => '8.4%',
+            'width' => '6%',
             'heading' => __('Priority'),
             'sort_col' => 'cdata__:priority__priority_urgency',
             ),
-        'assignee' => array(
-            'width' => '16%',
-            'heading' => __('Agent'),
-            ),
-        'dept' => array(
-            'width' => '16%',
-            'heading' => __('Department'),
-            'sort_col'  => 'dept__name',
+        'name' => array(
+            'width' => '30%',
+            'heading' => __('From'),
+            'sort_col' =>  'user__name',
             ),
         );
 
@@ -541,13 +541,19 @@ return false;">
                         value="<?php echo $T['ticket_id']; ?>" <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
                 <?php } ?>
+                <?php /* number */ ?>
                 <td title="<?php echo $T['user__default_email__address']; ?>" nowrap>
                   <a class="Icon <?php echo strtolower($T['source']); ?>Ticket preview"
                     title="Preview Ticket"
                     href="tickets.php?id=<?php echo $T['ticket_id']; ?>"
                     data-preview="#tickets/<?php echo $T['ticket_id']; ?>/preview"
                     ><?php echo $tid; ?></a></td>
+                <?php /* date */ ?>
                 <td align="center" nowrap><?php echo Format::datetime($T[$date_col ?: 'lastupdate']) ?: $date_fallback; ?></td>
+                <?php /* assigned */ ?>
+                <td nowrap><span class="truncate" style="max-width: 169px"><?php
+                    echo Format::htmlchars($la); ?></span></td>
+                <?php /* title */ ?>
                 <td><div style="max-width: <?php
                     $base = 279;
                     // Make room for the paperclip and some extra
@@ -569,15 +575,10 @@ return false;">
                         </span>
                     <?php } ?>
                 </td>
-                <td nowrap><div><?php
-                    if ($T['collab_count'])
-                        echo '<span class="pull-right faded-more" data-toggle="tooltip" title="'
-                            .$T['collab_count'].'"><i class="icon-group"></i></span>';
-                    ?><span class="truncate" style="max-width:<?php
-                        echo $T['collab_count'] ? '150px' : '170px'; ?>"><?php
-                    $un = new UsersName($T['user__name']);
-                        echo Format::htmlchars($un);
-                    ?></span></div></td>
+                <?php /* department */ ?>
+                <td nowrap><span class="truncate" style="max-width: 169px"><?php
+                    echo Format::htmlchars($lc); ?></span></td>
+                <?php /* priority */ ?>    
                 <?php
                 if($search && !$status){
                     $displaystatus=TicketStatus::getLocalById($T['status_id'], 'value', $T['status__name']);
@@ -591,10 +592,17 @@ return false;">
                 <?php
                 }
                 ?>
-                <td nowrap><span class="truncate" style="max-width: 169px"><?php
-                    echo Format::htmlchars($la); ?></span></td>
-                <td nowrap><span class="truncate" style="max-width: 169px"><?php
-                    echo Format::htmlchars($lc); ?></span></td>
+                <?php /* user */ ?>
+                <td nowrap><div><?php
+                    if ($T['collab_count'])
+                        echo '<span class="pull-right faded-more" data-toggle="tooltip" title="'
+                            .$T['collab_count'].'"><i class="icon-group"></i></span>';
+                    ?><span class="truncate" style="max-width:<?php
+                        echo $T['collab_count'] ? '150px' : '170px'; ?>"><?php
+                    $un = new UsersName($T['user__name']);
+                        echo Format::htmlchars($un);
+                    ?></span></div></td>
+                
             </tr>
             <?php
             } //end of foreach
