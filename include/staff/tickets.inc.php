@@ -465,13 +465,13 @@ return false;">
             <?php
             // Swap some columns based on the queue.
             if ($showassigned ) {
-                unset($queue_columns['dept']);
+                //unset($queue_columns['dept']);
                 if (!strcasecmp($status,'closed'))
                     $queue_columns['assignee']['heading'] =  __('Closed By');
                 else
                     $queue_columns['assignee']['heading'] =  __('Assigned To');
             } else {
-                unset($queue_columns['assignee']);
+                //unset($queue_columns['assignee']);
             }
             if ($search && !$status)
                 unset($queue_columns['priority']);
@@ -512,16 +512,16 @@ return false;">
                 elseif($T['isoverdue'])
                     $flag='overdue';
 
-                $lc='';
-                if ($showassigned) {
+                $la='';
+                /*if ($showassigned) {*/
                     if ($T['staff_id'])
-                        $lc = new AgentsName($T['staff__firstname'].' '.$T['staff__lastname']);
+                        $la = new AgentsName($T['staff__firstname'].' '.$T['staff__lastname']);
                     elseif ($T['team_id'])
-                        $lc = Team::getLocalById($T['team_id'], 'name', $T['team__name']);
-                }
-                else {
+                        $la = Team::getLocalById($T['team_id'], 'name', $T['team__name']);
+                //}
+                /*else {*/
                     $lc = Dept::getLocalById($T['dept_id'], 'name', $T['dept__name']);
-                }
+                //}
                 $tid=$T['number'];
                 $subject = $subject_field->display($subject_field->to_php($T['cdata__subject']));
                 $threadcount=$T['thread_count'];
@@ -592,6 +592,8 @@ return false;">
                 }
                 ?>
                 <td nowrap><span class="truncate" style="max-width: 169px"><?php
+                    echo Format::htmlchars($la); ?></span></td>
+                <td nowrap><span class="truncate" style="max-width: 169px"><?php
                     echo Format::htmlchars($lc); ?></span></td>
             </tr>
             <?php
@@ -602,7 +604,7 @@ return false;">
     </tbody>
     <tfoot>
      <tr>
-        <td colspan="7">
+        <td colspan="8">
             <?php if($total && $thisstaff->canManageTickets()){ ?>
             <?php echo __('Select');?>:&nbsp;
             <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
