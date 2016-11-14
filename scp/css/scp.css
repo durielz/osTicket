@@ -125,7 +125,7 @@ a time {
 
 
 #container {
-    width:960px;
+    width:100%;
     margin:0 auto 20px auto;
 }
 
@@ -470,7 +470,7 @@ a.Icon:hover {
     border:1px solid #aaa;
     border-top:none;
     border-bottom:3px solid #bbb;
-    padding:10px 10px 20px 10px;
+    padding:20px;
     background:#fff;
 }
 
@@ -519,6 +519,7 @@ table.list {
     background:#ccc;
     margin: 2px 0;
     border-bottom: 1px solid #ccc;
+    width: 100% !important;
 }
 
 table.list caption {
@@ -859,6 +860,10 @@ h3 {
 .has_bottom_border {
     padding-bottom:5px;
     border-bottom:1px solid #ddd;
+}
+
+.ticket_info {
+	width: 100% !important;
 }
 
 .ticket_info th {
