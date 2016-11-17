@@ -348,25 +348,42 @@ if($ticket->isOverdue())
                             </div>
                             <?php /* informazioni sul contratto */ ?>
                             <?php 
-                            	$stato=$user->getOrganization()->getVar('contract_state')->getValue();
-                            	$scadenza=$user->getOrganization()->getVar('contract_due_date')->getValue();
-                            	$tipo=$user->getOrganization()->getVar('contract_type')->getValue();
-                            	$prodotti=$user->getOrganization()->getVar('products')->getValue();
-                            	$color = 'orange' ;
-                            	if ($stato == "In Corso") {
-                    	        	$color = 'green' ;
-                    	        }
-                    	        else if ($stato == "Scaduto A Consuntivo") {
-                    	            $color = '#9999ff' ;
-                    	        }
-                    	        else if($stato == "Scaduto" || $stato == "Insoluto") {
-                    	            $color = 'red' ;
-                    	        }
-                            	$scadenzaDatetime = new DateTime($scadenza);
+                            	if($org = $user->getOrganization()) {
+	                            	$stato="";
+	                            	if($org->getVar('contract_state')){
+	                            		$stato=$org->getVar('contract_state')->getValue();
+	                            	}
+	                            	$scadenza="";
+	                            	if($org->getVar('contract_due_date')){
+	                            		$scadenza=$org->getVar('contract_due_date')->getValue();
+	                            	}
+	                            	$tipo="";
+	                            	if($org->getVar('contract_type')){
+	                            		$tipo=$org->getVar('contract_type')->getValue();
+	                            	}
+	                            	$prodotti="";
+	                            	if($org->getVar('products')){
+	                            		$prodotti=$org->getVar('products')->getValue();
+	                            	}
+	                            	$color = 'orange' ;
+	                            	if ($stato == "In Corso") {
+	                    	        	$color = 'green' ;
+	                    	        }
+	                    	        else if ($stato == "Scaduto A Consuntivo") {
+	                    	            $color = '#9999ff' ;
+	                    	        }
+	                    	        else if($stato == "Scaduto" || $stato == "Insoluto") {
+	                    	            $color = 'red' ;
+	                    	        }
+	                            	$scadenzaDatetime = new DateTime($scadenza);
+	                            	
+	                            	if($stato != "" && $scadenza != "") {
                             ?>
                             <span style="color: <?php echo $color ?>;font-size: 13px;">
                             	Contratto <?php echo $tipo.' <b>'.$stato.'</b> al '.$scadenzaDatetime->format('d/m/Y').' <em>('.$prodotti.')</em>' ?> 
                             </span>
+                            <?php 	}
+                            	} ?>
                         </td>
                     </tr>
 <?php   } # end if (user->org) ?>
