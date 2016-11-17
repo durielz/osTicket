@@ -374,7 +374,7 @@ TicketForm::ensureDynamicDataView();
 // ------------------------------------------------------------
 $tickets->values('lock__staff_id', 'staff_id', 'isoverdue', 'team_id',
 'ticket_id', 'number', 'cdata__subject', 'user__default_email__address',
-'source', 'cdata__:priority__priority_color', 'cdata__:priority__priority_desc', 'status_id', 'status__name', 'status__state', 'dept_id', 'dept__name', 'user__name', 'lastupdate', 'isanswered', 'staff__firstname', 'staff__lastname', 'team__name');
+'source', 'cdata__:priority__priority_color', 'cdata__:priority__priority_desc', 'status_id', 'status__name', 'status__state', 'dept_id', 'dept__name', 'user__name', 'lastupdate', 'isanswered', 'staff__firstname', 'staff__lastname', 'team__name', 'user__org__name', 'user__org_id');
 
 // Add in annotations
 $tickets->annotate(array(
@@ -593,16 +593,24 @@ return false;">
                 }
                 ?>
                 <?php /* user */ ?>
-                <td nowrap><div><?php
-                    if ($T['collab_count'])
-                        echo '<span class="pull-right faded-more" data-toggle="tooltip" title="'
-                            .$T['collab_count'].'"><i class="icon-group"></i></span>';
-                    ?><span class="truncate" style="max-width:<?php
-                        echo $T['collab_count'] ? '150px' : '170px'; ?>"><?php
-                    $un = new UsersName($T['user__name']);
-                        echo Format::htmlchars($un);
-                    ?></span></div></td>
-                
+                <td nowrap><div>
+                	<?php
+	                    if ($T['collab_count'])
+	                        echo '<span class="pull-right faded-more" data-toggle="tooltip" title="'
+	                            .$T['collab_count'].'"><i class="icon-group"></i></span>';
+	                    ?><span class="truncate" style="max-width:<?php
+	                        echo $T['collab_count'] ? '150px' : '170px'; ?>"><?php
+	                    $un = new UsersName($T['user__name']);
+	                        echo Format::htmlchars($un);
+	                    ?></span>
+	                    <?php /*organization*/ ?>
+	                    <?php if($T['user__org__name'] != ""): ?>
+	                    (<a href="tickets.php?<?php echo Http::build_query(array(
+	                        'status'=>'open', 'a'=>'search', 'orgid'=> $T['user__org_id']
+	                    )); ?>" title="<?php echo __('Related Tickets'); ?>"><?php echo $T['user__org__name'] ?>
+	                    </a>)
+	                    <?php endif; ?>
+                    </div></td>
             </tr>
             <?php
             } //end of foreach
