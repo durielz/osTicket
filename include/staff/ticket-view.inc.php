@@ -313,7 +313,7 @@ if($ticket->isOverdue())
                 <tr>
                     <th><?php echo __('Organization'); ?>:</th>
                     <td><i class="icon-building"></i>
-                    <?php echo Format::htmlchars($user->getOrganization()->getName()); ?>
+                    <a href="http://192.168.0.1/Crm/Clienti_list.php?a=search&value=1&SearchFor=<?php echo urlencode($user->getOrganization()->getName()) ?>"><?php echo Format::htmlchars($user->getOrganization()->getName()); ?></a>
                         <a href="tickets.php?<?php echo Http::build_query(array(
                             'status'=>'open', 'a'=>'search', 'orgid'=> $user->getOrgId()
                         )); ?>" title="<?php echo __('Related Tickets'); ?>"
@@ -380,10 +380,13 @@ if($ticket->isOverdue())
 	                            	if($stato != "" && $scadenza != "") {
                             ?>
                             <span style="color: <?php echo $color ?>;font-size: 13px;">
-                            	Contratto <?php echo $tipo.' <b>'.$stato.'</b> al '.$scadenzaDatetime->format('d/m/Y').' <em>('.$prodotti.')</em>' ?> 
+                            	Contratto <?php echo '<b>'.$tipo.' '.$stato.'</b> al '.$scadenzaDatetime->format('d/m/Y').' <em>('.$prodotti.')</em>' ?> 
                             </span>
-                            <?php 	}
-                            	} ?>
+                            <?php 	} else { ?>
+                            <span style="color: red;font-size: 13px;">
+                            	Nessun contratto di assistenza attivo
+                            </span>
+                            <?php	}} ?>
                         </td>
                     </tr>
 <?php   } # end if (user->org) ?>
