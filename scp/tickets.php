@@ -110,15 +110,19 @@ if($_POST && !$errors):
                     $errors['err']=__('Email is in banlist. Must be removed to reply.');
                   
                 //set form custom field! POR...........
-	            if(isset($vars['spent_time'])) {
-	              	$forms = DynamicFormEntry::forTicket($ticket->getId());
-	              	foreach ($forms as $form) {
-	              		$spentTime = $form->getField('spent_time');
-	              		if ($spentTime) {
-	              			$spentTime->setValue($vars['spent_time']);
-	              			$form->save();
-	              		}
-	              	}
+	            if(isset($vars['spent_time']) && $vars['spent_time'] != "") {
+	            	if(is_numeric($vars['spent_time'])) {
+		              	$forms = DynamicFormEntry::forTicket($ticket->getId());
+		              	foreach ($forms as $form) {
+		              		$spentTime = $form->getField('spent_time');
+		              		if ($spentTime) {
+		              			$spentTime->setValue($vars['spent_time']);
+		              			$form->save();
+		              		}
+		              	}
+		            } else {
+		            	$errors['err'] = __('Working time must be numeric');
+		            }
 	            }
             }
 				
@@ -168,6 +172,22 @@ if($_POST && !$errors):
                 }
                 elseif ($lock->getCode() != $_POST['lockCode']) {
                     $errors['err'] = __('Your lock has expired. Please try again');
+                }
+            }
+            
+            //set form custom field! POR...........
+            if(isset($vars['spent_time']) && $vars['spent_time'] != "") {
+            	if(is_numeric($vars['spent_time'])) {
+                  	$forms = DynamicFormEntry::forTicket($ticket->getId());
+                  	foreach ($forms as $form) {
+                  		$spentTime = $form->getField('spent_time');
+                  		if ($spentTime) {
+                  			$spentTime->setValue($vars['spent_time']);
+                  			$form->save();
+                  		}
+                  	}
+                } else {
+                	$errors['err'] = __('Working time must be numeric');
                 }
             }
 
