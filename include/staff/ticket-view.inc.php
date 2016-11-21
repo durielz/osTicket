@@ -313,7 +313,7 @@ if($ticket->isOverdue())
                 <tr>
                     <th><?php echo __('Organization'); ?>:</th>
                     <td><i class="icon-building"></i>
-                    <a href="http://192.168.0.1/Crm/Clienti_list.php?a=search&value=1&SearchFor=<?php echo urlencode($user->getOrganization()->getName()) ?>"><?php echo Format::htmlchars($user->getOrganization()->getName()); ?></a>
+                    <a href="http://192.168.0.1/Crm/Clienti_list.php?a=search&value=1&SearchFor=<?php echo urlencode($user->getOrganization()->getName()) ?>&SearchOption=Contains&SearchField=" target="_blank"><?php echo Format::htmlchars($user->getOrganization()->getName()); ?></a>
                         <a href="tickets.php?<?php echo Http::build_query(array(
                             'status'=>'open', 'a'=>'search', 'orgid'=> $user->getOrgId()
                         )); ?>" title="<?php echo __('Related Tickets'); ?>"
@@ -765,6 +765,15 @@ if ($errors['err'] && isset($_POST['a'])) {
                     </select>
                 </td>
             </tr>
+            <?php /* get custom form data SPENT TIME */ ?>
+            <tr>
+                <td width="120" style="vertical-align:top">
+                    <label><strong><?php echo __('Working time'); ?>:</strong></label>
+                </td>
+                <td>
+                    <input type="text" value="<?php echo $ticket->getVar('spent_time') ?>" name="spent_time" />
+                </td>
+            </tr>
          </tbody>
         </table>
         <p  style="text-align:center;">
@@ -825,7 +834,7 @@ if ($errors['err'] && isset($_POST['a'])) {
             <tr><td colspan="2">&nbsp;</td></tr>
             <tr>
                 <td width="120">
-                    <label><?php echo __('Ticket Status');?>:</label>
+                    <label><?php echo __('Ticket Status'); ?>:</label>
                 </td>
                 <td>
                     <div class="faded"></div>
@@ -850,6 +859,15 @@ if ($errors['err'] && isset($_POST['a'])) {
                         ?>
                     </select>
                     &nbsp;<span class='error'>*&nbsp;<?php echo $errors['note_status_id']; ?></span>
+                </td>
+            </tr>
+            <?php /* get custom form data SPENT TIME */ ?>
+            <tr>
+                <td width="120" style="vertical-align:top">
+                    <label><strong><?php echo __('Working time'); ?>:</strong></label>
+                </td>
+                <td>
+                    <input type="text" value="<?php echo $ticket->getVar('spent_time') ?>" name="spent_time" />
                 </td>
             </tr>
         </table>

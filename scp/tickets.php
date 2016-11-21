@@ -72,8 +72,7 @@ $note_form = new SimpleForm(array(
 
 //At this stage we know the access status. we can process the post.
 if($_POST && !$errors):
-
-    if($ticket && $ticket->getId()) {
+	if($ticket && $ticket->getId()) {
         //More coffee please.
         $errors=array();
         $lock = $ticket->getLock(); //Ticket lock if any
@@ -109,8 +108,20 @@ if($_POST && !$errors):
                 //Make sure the email is not banned
                 if(!$errors['err'] && Banlist::isBanned($ticket->getEmail()))
                     $errors['err']=__('Email is in banlist. Must be removed to reply.');
+                  
+                //set form custom field! POR...........
+	            if(isset($vars['spent_time'])) {
+	              	$forms = DynamicFormEntry::forTicket($ticket->getId());
+	              	foreach ($forms as $form) {
+	              		$spentTime = $form->getField('spent_time');
+	              		if ($spentTime) {
+	              			$spentTime->setValue($vars['spent_time']);
+	              			$form->save();
+	              		}
+	              	}
+	            }
             }
-
+				
             if(!$errors && ($response=$ticket->postReply($vars, $errors, $_POST['emailreply']))) {
                 $msg = sprintf(__('%s: Reply posted successfully'),
                         sprintf(__('Ticket #%s'),
@@ -191,7 +202,7 @@ if($_POST && !$errors):
             break;
         case 'edit':
         case 'update':
-            if(!$ticket || !$role->hasPerm(TicketModel::PERM_EDIT))
+        	if(!$ticket || !$role->hasPerm(TicketModel::PERM_EDIT))
                 $errors['err']=__('Permission Denied. You are not allowed to edit tickets');
             elseif($ticket->update($_POST,$errors)) {
                 $msg=__('Ticket updated successfully');
