@@ -144,7 +144,7 @@ implements TemplateVariable {
         if ($this->email)
             return $this->email;
 
-        return $cfg ? $cfg->getDefaultEmail() : null;
+        return $cfg ? $cfg->getAlertEmail() : null;
     }
 
     function getEmail() {
